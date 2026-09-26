@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday My Best Friend! 🥳🎉</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Mali:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b81;
+            --primary-hover: #ff4757;
+            --secondary: #70a1ff;
+            --accent: #eccc68;
+            --bg-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --text-dark: #2f3542;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .bg-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            border: 2px solid #fff;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.05);
+            background: #fff;
+        }
+
+        .app-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 550px;
+            min-height: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.6);
+        }
+
+        .stepper-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: #57606f;
+            background: rgba(0,0,0,0.05);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dfe4ea;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            width: 25px;
+            border-radius: 10px;
+        }
+
+        .pages-wrapper {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(50px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0) scale(1);
+        }
+
+        .envelope-wrapper {
+            cursor: pointer;
+            perspective: 1000px;
+            margin-top: 15px;
+        }
+
+        .envelope {
+            width: 200px;
+            height: 140px;
+            background: #ff7675;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px) rotate(2deg);
+        }
+
+        .wax-seal {
+            width: 60px;
+            height: 60px;
+            background: #d63031;
+            border-radius: 50%;
+            border: 3px solid #ff7675;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: #ffeaa7;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .message-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 2px dashed #ffa502;
+            width: 100%;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .typing-text {
+            font-family: 'Mali', cursive;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #2f3542;
+            text-align: left;
+            white-space: pre-line;
+        }
+
+        /* Photo Grid - Support 5 Photos */
+        .photo-grid-5 {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 440px;
+            padding: 5px;
+        }
+
+        .polaroid-card {
+            background: #fff;
+            padding: 6px 6px 14px 6px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid-card:hover {
+            transform: scale(1.08) rotate(0deg) !important;
+            z-index: 10;
+        }
+
+        /* Layout placement for 5 cards */
+        .polaroid-card:nth-child(1) { grid-column: span 2; transform: rotate(-3deg); }
+        .polaroid-card:nth-child(2) { grid-column: span 2; transform: rotate(2deg); }
+        .polaroid-card:nth-child(3) { grid-column: span 2; transform: rotate(-2deg); }
+        .polaroid-card:nth-child(4) { grid-column: span 3; transform: rotate(3deg); }
+        .polaroid-card:nth-child(5) { grid-column: span 3; transform: rotate(-1deg); }
+
+        .polaroid-img {
+            width: 100%;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #f1f2f6;
+        }
+
+        .polaroid-caption {
+            font-family: 'Mali', cursive;
+            font-size: 11px;
+            margin-top: 6px;
+            color: #57606f;
+            font-weight: bold;
+        }
+
+        .cake-container {
+            position: relative;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .cake-emoji {
+            font-size: 100px;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+            transition: transform 0.3s;
+        }
+
+        .cake-container:hover .cake-emoji {
+            transform: scale(1.08);
+        }
+
+        .candle-flame {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            animation: flicker 0.6s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.8; transform: translateX(-50%) scale(0.9); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .candle-flame.off {
+            display: none;
+        }
+
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+            z-index: 20;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 25px;
+            border: none;
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-prev {
+            background: #dfe4ea;
+            color: #57606f;
+        }
+
+        .btn-prev:hover {
+            background: #ced6e0;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .btn-next:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 107, 129, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        h2 {
+            font-family: 'Mali', cursive;
+            color: #2f3542;
+            margin-bottom: 6px;
+            font-size: 22px;
+        }
+
+        p.subtitle {
+            font-size: 13px;
+            color: #747d8c;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-element" style="top: 10%; left: 8%; font-size: 35px;">🎈</div>
+    <div class="bg-element" style="top: 15%; right: 10%; font-size: 40px; animation-delay: -2s;">🎁</div>
+    <div class="bg-element" style="bottom: 12%; left: 12%; font-size: 38px; animation-delay: -4s;">✨</div>
+    <div class="bg-element" style="bottom: 15%; right: 8%; font-size: 35px; animation-delay: -1s;">🎉</div>
+
+    <button class="music-btn" id="musicToggle">
+        <span id="musicIcon">🎵</span> <span id="musicText">เปิดเพลง</span>
+    </button>
+
+    <div class="app-card">
+
+        <div class="stepper-header">
+            <span class="step-indicator" id="stepIndicator">หน้า 1 / 5</span>
+            <div class="dots-container">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="pages-wrapper">
+
+            <!-- PAGE 1: Entrance Surprise -->
+            <div class="page active" id="page1">
+                <h2>HBD MY FRIEND! 🥳</h2>
+                <p class="subtitle">มีข้อความพิเศษจากเพื่อนรักส่งมาถึงมึง กดซองจดหมายเพื่อเปิดอ่านสิ!</p>
+                <div class="envelope-wrapper" onclick="openEnvelope()">
+                    <div class="envelope">
+                        <div class="wax-seal">💌</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: Typing Message -->
+            <div class="page" id="page2">
+                <h2>ความในใจถึงมึง 💬</h2>
+                <div class="message-box">
+                    <p class="typing-text" id="typewriterText"></p>
+                </div>
+            </div>
+
+            <!-- PAGE 3: Photo Album (ใส่ URL รูปภาพ 5 รูปตรงนี้) -->
+            <div class="page" id="page3">
+                <h2>คลังรูปภาพความทรงจำ 📸</h2>
+                <p class="subtitle">รวมรูปภาพวีรกรรมความสนุกของเราทั้ง 5 รูป!</p>
+                <div class="photo-grid-5">
+                    <div class="polaroid-card">
+                        <img class="polaroid-img" src=https://i.postimg.cc/dt6hHNQp/15cbdb53-95a1-48b2-8af5-1ba24d392f1c.jpg alt="Photo 1">
+                        <div class="polaroid-caption"> 🎒</div>
+                    </div>
+                    <div class="polaroid-card">
+                        <img class="polaroid-img" src=https://i.postimg.cc/ZKHW7sY1/9fc46878-375e-4f7a-a87a-7921b8cd7216.jpg alt="Photo 2">
+                        <div class="polaroid-caption"> 🤪</div>
+                    </div>
+                    <div class="polaroid-card">
+                        <img class="polaroid-img" src=https://i.postimg.cc/02nzWX5B/ce3783a3-bc33-40c1-bbe9-080d0e8509b0.jpgalt="Photo 3">
+                        <div class="polaroid-caption">😎</div>
+                    </div>
+                    <div class="polaroid-card">
+                        <img class="polaroid-img" src=https://i.postimg.cc/Kvf1qpvx/d1ed7728-4492-4d05-9df3-6c79aa0e5ff9.jpgalt="Photo 4">
+                        <div class="polaroid-caption">🏆</div>
+                    </div>
+                    <div class="polaroid-card">
+                        <img class="polaroid-img" src=https://i.postimg.cc/xT5XxpT0/dc7c3b46-5d2e-46b7-a3a7-d7bbc64d2822.jpgalt="Photo 5">
+                        <div class="polaroid-caption">💖</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 4: Candle Blow -->
+            <div class="page" id="page4">
+                <h2>อธิษฐานแล้วเป่าเทียน! 🎂</h2>
+                <p class="subtitle">ตั้งจิตอธิษฐานสิ่งดีๆ แล้วกดที่เค้กเพื่อเป่าเทียนเลย!</p>
+                <div class="cake-container" onclick="blowCandle()">
+                    <div class="candle-flame" id="flame">🔥</div>
+                    <div class="cake-emoji">🎂</div>
+                </div>
+                <p id="wishStatusText" style="font-size: 14px; font-weight: bold; color: #ff4757; min-height: 24px;"></p>
+            </div>
+
+            <!-- PAGE 5: Final Secret Wishes -->
+            <div class="page" id="page5">
+                <h2>คำอวยพรสุดท้าย ✨</h2>
+                <div style="background: rgba(255,255,255,0.7); padding: 18px; border-radius: 18px; margin-bottom: 12px;">
+                    <p style="font-family: 'Mali', cursive; font-size: 15px; line-height: 1.8; color: #2f3542;">
+                        "ขอให้ปีนี้เป็นปีที่ดีมากสำหรับมึง คิดสิ่งใดก็ขอให้สมหวัง สุขภาพแข็งแรง เรียน/ทำงานก็ขอให้ปังๆ ไม่ปวดขา! มีความสุขในทุกๆ วัน และอยู่เป็นเพื่อนกวนๆ แบบนี้ไปนานๆ นะเว้ย!" 💖
+                    </p>
+                </div>
+                <button class="btn" style="background: #2ed573; color: white;" onclick="fireExtraConfetti()">🎉 จุดพลุฉลองเพิ่มอีกรอบ!</button>
+            </div>
+
+        </div>
+
+        <div class="nav-footer">
+            <button class="btn btn-prev" id="prevBtn" onclick="changeStep(-1)" disabled>⬅ ย้อนกลับ</button>
+            <button class="btn btn-next" id="nextBtn" onclick="changeStep(1)">ถัดไป ➔</button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        let isCandleBlown = false;
+        let audioCtx = null;
+        let isPlaying = false;
+        let musicInterval = null;
+
+        const letterText = `สุขสันต์วันเกิดนะเพื่อนรัก! 🎂✨
+
+ขอบคุณที่เป็นเพื่อนที่ดี คอยลุย คอยหัวเราะ และผ่านอะไรหลายๆ อย่างมาด้วยกันเสมอ
+
+ขอให้ปีนี้มึงมีความสุขมากๆ สมหวังในทุกๆ เรื่อง โชคดี มีเงินใช้ไม่ขาดมือ สุขภาพแข็งแรง 
+
+ไม่ว่าจะเจอเรื่องอะไร มึงยังมีกูเป็นเพื่อนคอยซัพพอร์ตเสมอ ยินดีที่ได้รู้จักและได้เป็นเพื่อนมึงนะเว้ย! 🔥❤️`;
+
+        function updateStepper() {
+            document.getElementById('stepIndicator').innerText = `หน้า ${currentStep} / ${totalSteps}`;
+            
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                if (idx === currentStep - 1) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            const pages = document.querySelectorAll('.page');
+            pages.forEach((page, idx) => {
+                if (idx === currentStep - 1) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentStep === totalSteps) {
+                nextBtn.innerText = "🔄 เริ่มใหม่อีกครั้ง";
+            } else {
+                nextBtn.innerText = "ถัดไป ➔";
+            }
+
+            if (currentStep === 2) {
+                startTypewriter();
+            }
+        }
+
+        function changeStep(direction) {
+            if (currentStep === totalSteps && direction === 1) {
+                currentStep = 1;
+            } else {
+                currentStep = Math.min(Math.max(1, currentStep + direction), totalSteps);
+            }
+            updateStepper();
+        }
+
+        function openEnvelope() {
+            fireConfetti();
+            startAudio();
+            changeStep(1);
+        }
+
+        let typeIndex = 0;
+        let isTyping = false;
+
+        function startTypewriter() {
+            const target = document.getElementById('typewriterText');
+            if (isTyping || target.innerText.length > 0) return;
+            
+            isTyping = true;
+            typeIndex = 0;
+            target.innerText = '';
+
+            function type() {
+                if (typeIndex < letterText.length) {
+                    target.innerText += letterText.charAt(typeIndex);
+                    typeIndex++;
+                    setTimeout(type, 35);
+                } else {
+                    isTyping = false;
+                }
+            }
+            type();
+        }
+
+        function blowCandle() {
+            if (isCandleBlown) return;
+            
+            const flame = document.getElementById('flame');
+            flame.classList.add('off');
+            isCandleBlown = true;
+            
+            document.getElementById('wishStatusText').innerText = "✨ คำอวยพรของมึงได้รับการบันทึกแล้ว! ขอให้สมปรารถนานะเพื่อน! ✨";
+            fireConfetti();
+        }
+
+        function fireConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function fireExtraConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.5 }
+                });
+            }
+        }
+
+        function startAudio() {
+            if (isPlaying) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                isPlaying = true;
+                document.getElementById('musicIcon').innerText = "🔊";
+                document.getElementById('musicText').innerText = "ปิดเพลง";
+
+                const notes = [
+                    {f: 264, d: 0.4}, {f: 264, d: 0.4}, {f: 297, d: 0.8}, {f: 264, d: 0.8}, {f: 352, d: 0.8}, {f: 330, d: 1.2},
+                    {f: 264, d: 0.4}, {f: 264, d: 0.4}, {f: 297, d: 0.8}, {f: 264, d: 0.8}, {f: 396, d: 0.8}, {f: 352, d: 1.2}
+                ];
+
+                let noteIdx = 0;
+                function playNextNote() {
+                    if (!isPlaying || !audioCtx) return;
+                    const n = notes[noteIdx];
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = n.f;
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + n.d);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + n.d);
+
+                    noteIdx = (noteIdx + 1) % notes.length;
+                    musicInterval = setTimeout(playNextNote, n.d * 1000);
+                }
+                playNextNote();
+            } catch (e) {
+                console.log('Audio init failed');
+            }
+        }
+
+        function stopAudio() {
+            isPlaying = false;
+            clearTimeout(musicInterval);
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
+            document.getElementById('musicIcon').innerText = "🎵";
+            document.getElementById('musicText').innerText = "เปิดเพลง";
+        }
+
+        document.getElementById('musicToggle').addEventListener('click', () => {
+            if (isPlaying) {
+                stopAudio();
+            } else {
+                startAudio();
+            }
+        });
+    </script>
+</body>
+</html>
